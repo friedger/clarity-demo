@@ -37,15 +37,6 @@ describe("dev registry contract test suite", () => {
       const result = Result.unwrapString(receipt);
       assert.equal(result, "hello world");
     });
-
-    it("should echo number", async () => {
-      const query = client.createQuery({
-        method: { name: "echo-number", args: ["123"] },
-      });
-      const receipt = await client.submitQuery(query);
-      const result = Result.unwrapInt(receipt);
-      assert.equal(result, 123);
-    });
   });
 
   after(async () => {
