@@ -29,5 +29,4 @@
     (begin (var-set last-id id) 
       (map-insert registry {id: id} {name: name, url: url}) 
       (map-insert lookup {name: name} {id: id})
-      (unwrap-panic (nft-mint? developer-nft id tx-sender))                                 
       (ok id))))
