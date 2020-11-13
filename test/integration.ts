@@ -10,6 +10,13 @@ import {
   someCV,
   stringAsciiCV,
   tupleCV,
+  makeSTXTokenTransfer,
+  standardPrincipalCV,
+  PostConditionMode,
+  makeStandardNonFungiblePostCondition,
+  NonFungibleConditionCode,
+  createAssetInfo,
+  uintCV,
 } from "@stacks/transactions";
 import { StacksMocknet } from "@stacks/network";
 import { assert } from "chai";
@@ -23,7 +30,7 @@ network.coreApiUrl = "http://localhost:20443";
 export async function deployContract(contractName: string) {
   const codeBody = fs
     .readFileSync(`./contracts/${contractName}.clar`)
-    .toString();
+    .toString();    
   var transaction = await makeContractDeploy({
     contractName,
     codeBody: codeBody,
@@ -59,6 +66,7 @@ describe("register name", () => {
     const result = await broadcastTransaction(tx, network);
     console.log(result);
     await timeout(10000);
+
     const response = await fetch(
       network.getReadOnlyFunctionCallApiUrl(
         stxAddress,
@@ -87,4 +95,51 @@ describe("register name", () => {
       )
     );
   });
+
+  it ("update", async () => {
+      const tx = await makeContractCall({
+      contractAddress: stxAddress,
+      contractName: "dev-registry",
+      functionName: "transfer",
+      functionArgs: [
+        stringAsciiCV("test.id"),
+        standardPrincipalCV("ST26FVX16539KKXZKJN098Q08HRX3XBAP541MFS0P"),
+      ],
+      senderKey: secretKey,
+      network,
+      postConditionMode: PostConditionMode.Deny,
+      postConditions: [
+          makeStandardNonFungiblePostCondition(stxAddress, NonFungibleConditionCode.DoesNotOwn, 
+            createAssetInfo(stxAddress, "dev-registry", "developer-nft"),
+            uintCV(1))
+      ]
+    });
+    const txid = await broadcastTransaction(tx, network)
+    await timeout(10000)
+
+    const response = await fetch(
+      network.getReadOnlyFunctionCallApiUrl(
+        stxAddress,
+        "dev-registry",
+        "get-owner?"
+      ),
+      {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: `{ "sender": "${stxAddress}", "arguments": ["${cvToHex(
+          stringAsciiCV("test.id")
+        )}"] } `,
+      }
+    );
+    const responseBody = await response.json();
+    const actual = responseBody.result;
+    assert.equal(
+      actual,
+      cvToHex(
+        someCV(
+          standardPrincipalCV("ST26FVX16539KKXZKJN098Q08HRX3XBAP541MFS0P"),                    
+        )
+      )
+    );
+  })
 });
