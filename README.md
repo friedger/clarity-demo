@@ -41,7 +41,7 @@ Links:
    * [Clarity Tools](https://clarity.tools)
    * [Smart Contracts 101 Video](https://www.youtube.com/watch?v=3EtXnygXk1I)
    * [Clarity Sepcification: SIP-002](https://github.com/blockstack/stacks-blockchain/blob/master/sip/sip-002-smart-contract-language.md)
-1. [Deploy to testnet](https://zoom.us/rec/play/X75YdhgspTondQbAr5bU4z8F-wqlw9nS80cJKCVRuPgLBeIYzbjUY0z-fegNNSKrR6eUPXkI1cPqA40F.fEEQWWBC53TZEsob?startTime=1604079090000&_x_zm_rtaid=zGPPmJxrQY2m7jfL7GH4cA.1606376220431.ecc3c96ac83caaa13aaa71f0bc2a14dd&_x_zm_rhtaid=542) (30 Oct 2020)  
+1. Deploy to testnet (30 Oct 2020)  
 Adding a lookup map and an `update` function to the contract using `map-set`; deploying to testnet using Clarity tools as well as Sandbox in testnet explorer. Issues we had:  
    * ~~`strings-ascii` type not supported by Clarity VM~~
    * ~~Clarity Tools using `buf` instead of `buff`~~
